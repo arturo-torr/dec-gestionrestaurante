@@ -37,6 +37,16 @@ function test() {
   } catch (error) {
     console.log(error.message);
   }
+
+  try {
+    console.log("--- Testeando Allergen ---");
+
+    let allergen = new Allergen("Alérgeno", "Descripción del alérgeno");
+
+    console.log(allergen.toString());
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 test();

@@ -6,7 +6,7 @@ class Dish {
   #image;
 
   // En el constructor sólo será obligatorio el nombre del plato
-  constructor(name, description = "", ingredients = [], image = "") {
+  constructor(name = " ", description = "", ingredients = [], image = "") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -101,7 +101,7 @@ class Category {
   #description;
 
   // En el constructor sólo será obligatorio el nombre de la categoría
-  constructor(name, description = "") {
+  constructor(name = " ", description = "") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -140,6 +140,55 @@ class Category {
   toString() {
     return (
       "Category name: " + this.#name + ", Description: " + this.#description
+    );
+  }
+}
+
+// Objeto que representa los alérgenos que puede tener un determinado plato
+class Allergen {
+  #name;
+  #description;
+
+  // En el constructor sólo será obligatorio el nombre del alérgeno
+  constructor(name = " ", description = "") {
+    name = name.trim();
+
+    // Si no introducimos un valor, lanza una excepción
+    if (name === "undefined" || name === "")
+      throw new EmptyValueException("name");
+
+    this.#name = name;
+    this.#description = description;
+  }
+
+  // --- Getters & Setters ---
+  get name() {
+    return this.#name;
+  }
+
+  set name(value = "EmptyAllergen") {
+    value = value.trim();
+    if (value === "undefined" || value === "EmptyAllergen" || value === "")
+      throw new EmptyValueException("value");
+
+    this.#name = value;
+  }
+
+  get description() {
+    return this.#description;
+  }
+
+  set description(value) {
+    if (value === "undefined" || value == null)
+      throw new EmptyValueException("description");
+
+    this.#description = value;
+  }
+
+  // Imprime por pantalla las propiedades del objeto Category
+  toString() {
+    return (
+      "Allergen name: " + this.#name + ", Description: " + this.#description
     );
   }
 }
