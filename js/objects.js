@@ -185,7 +185,7 @@ class Allergen {
     this.#description = value;
   }
 
-  // Imprime por pantalla las propiedades del objeto Category
+  // Imprime por pantalla las propiedades del objeto Allergen
   toString() {
     return (
       "Allergen name: " + this.#name + ", Description: " + this.#description
@@ -198,7 +198,7 @@ class Menu {
   #name;
   #description;
 
-  // En el constructor sólo será obligatorio el nombre del alérgeno
+  // En el constructor sólo será obligatorio el nombre del menú
   constructor(name = " ", description = "") {
     name = name.trim();
 
@@ -234,7 +234,68 @@ class Menu {
     this.#description = value;
   }
 
-  // Imprime por pantalla las propiedades del objeto Category
+  // Imprime por pantalla las propiedades del objeto Menu
+  toString() {
+    return "Menu name: " + this.#name + ", Description: " + this.#description;
+  }
+}
+
+// Objeto que representa un recurso restaurante para formar parte de la cadena de restaurantes a gestionar
+class Restaurant {
+  #name;
+  #description;
+  #location;
+
+  // En el constructor sólo será obligatorio el nombre del restaurante
+  constructor(name = " ", description = "") {
+    name = name.trim();
+
+    // Si no introducimos un valor, lanza una excepción
+    if (name === "undefined" || name === "")
+      throw new EmptyValueException("name");
+
+    this.#name = name;
+    this.#description = description;
+    this.#location = null;
+  }
+
+  // --- Getters & Setters ---
+  get name() {
+    return this.#name;
+  }
+
+  set name(value = "EmptyRestaurant") {
+    value = value.trim();
+    if (value === "undefined" || value === "EmptyRestaurant" || value === "")
+      throw new EmptyValueException("value");
+
+    this.#name = value;
+  }
+
+  get description() {
+    return this.#description;
+  }
+
+  set description(value) {
+    if (value === "undefined" || value == null)
+      throw new EmptyValueException("description");
+
+    this.#description = value;
+  }
+
+  get location() {
+    return this.#location;
+  }
+
+  set location(value) {
+    if (value === "undefined" || value == null)
+      throw new EmptyValueException("location");
+    if (!value instanceof Coords)
+      throw new InvalidValueException("location", value);
+    this.#location = value;
+  }
+
+  // Imprime por pantalla las propiedades del objeto Restaurant
   toString() {
     return "Menu name: " + this.#name + ", Description: " + this.#description;
   }
