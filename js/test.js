@@ -47,6 +47,16 @@ function test() {
   } catch (error) {
     console.log(error.message);
   }
+
+  try {
+    console.log("--- Testeando Menú ---");
+
+    let menu = new Menu("Menú", "Descripción del menú");
+
+    console.log(menu.toString());
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 test();

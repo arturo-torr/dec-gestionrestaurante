@@ -192,3 +192,50 @@ class Allergen {
     );
   }
 }
+
+// Objeto que representa el menú que tendrá el restaurante
+class Menu {
+  #name;
+  #description;
+
+  // En el constructor sólo será obligatorio el nombre del alérgeno
+  constructor(name = " ", description = "") {
+    name = name.trim();
+
+    // Si no introducimos un valor, lanza una excepción
+    if (name === "undefined" || name === "")
+      throw new EmptyValueException("name");
+
+    this.#name = name;
+    this.#description = description;
+  }
+
+  // --- Getters & Setters ---
+  get name() {
+    return this.#name;
+  }
+
+  set name(value = "EmptyMenu") {
+    value = value.trim();
+    if (value === "undefined" || value === "EmptyMenu" || value === "")
+      throw new EmptyValueException("value");
+
+    this.#name = value;
+  }
+
+  get description() {
+    return this.#description;
+  }
+
+  set description(value) {
+    if (value === "undefined" || value == null)
+      throw new EmptyValueException("description");
+
+    this.#description = value;
+  }
+
+  // Imprime por pantalla las propiedades del objeto Category
+  toString() {
+    return "Menu name: " + this.#name + ", Description: " + this.#description;
+  }
+}
