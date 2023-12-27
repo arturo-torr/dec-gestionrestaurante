@@ -1,5 +1,7 @@
 function test() {
   try {
+    console.log("--- Testeando Dish ---");
+
     let dish = new Dish(
       "Cosido",
       "Cocido madrileño",
@@ -22,6 +24,16 @@ function test() {
       console.log(element);
       obj = iterator.next();
     }
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  try {
+    console.log("--- Testeando Category ---");
+
+    let category = new Category("Categoria", "Descripción de la categoría");
+
+    console.log(category.toString());
   } catch (error) {
     console.log(error.message);
   }
