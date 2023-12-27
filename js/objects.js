@@ -6,7 +6,7 @@ class Dish {
   #image;
 
   // En el constructor sólo será obligatorio el nombre del plato
-  constructor(name = " ", description = "", ingredients = [], image = "") {
+  constructor(name = " ") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -14,9 +14,9 @@ class Dish {
       throw new EmptyValueException("name");
 
     this.#name = name;
-    this.#description = description;
-    this.#ingredients = ingredients;
-    this.#image = image;
+    this.#description = null;
+    this.#ingredients = null;
+    this.#image = null;
   }
 
   // --- Getters & Setters ---
@@ -62,6 +62,10 @@ class Dish {
     };
   }
 
+  set ingredients(value = []) {
+    this.#ingredients = value;
+  }
+
   get image() {
     return this.#image;
   }
@@ -101,7 +105,7 @@ class Category {
   #description;
 
   // En el constructor sólo será obligatorio el nombre de la categoría
-  constructor(name = " ", description = "") {
+  constructor(name = " ") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -109,7 +113,7 @@ class Category {
       throw new EmptyValueException("name");
 
     this.#name = name;
-    this.#description = description;
+    this.#description = null;
   }
 
   // --- Getters & Setters ---
@@ -150,7 +154,7 @@ class Allergen {
   #description;
 
   // En el constructor sólo será obligatorio el nombre del alérgeno
-  constructor(name = " ", description = "") {
+  constructor(name = " ") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -158,7 +162,7 @@ class Allergen {
       throw new EmptyValueException("name");
 
     this.#name = name;
-    this.#description = description;
+    this.#description = null;
   }
 
   // --- Getters & Setters ---
@@ -199,7 +203,7 @@ class Menu {
   #description;
 
   // En el constructor sólo será obligatorio el nombre del menú
-  constructor(name = " ", description = "") {
+  constructor(name = " ") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -207,7 +211,7 @@ class Menu {
       throw new EmptyValueException("name");
 
     this.#name = name;
-    this.#description = description;
+    this.#description = null;
   }
 
   // --- Getters & Setters ---
@@ -247,7 +251,7 @@ class Restaurant {
   #location;
 
   // En el constructor sólo será obligatorio el nombre del restaurante
-  constructor(name = " ", description = "") {
+  constructor(name = " ") {
     name = name.trim();
 
     // Si no introducimos un valor, lanza una excepción
@@ -255,7 +259,7 @@ class Restaurant {
       throw new EmptyValueException("name");
 
     this.#name = name;
-    this.#description = description;
+    this.#description = null;
     this.#location = null;
   }
 
@@ -290,13 +294,63 @@ class Restaurant {
   set location(value) {
     if (value === "undefined" || value == null)
       throw new EmptyValueException("location");
-    if (!value instanceof Coords)
+    if (!value instanceof Coordinate)
       throw new InvalidValueException("location", value);
     this.#location = value;
   }
 
   // Imprime por pantalla las propiedades del objeto Restaurant
   toString() {
-    return "Menu name: " + this.#name + ", Description: " + this.#description;
+    return (
+      "Restaurant name: " +
+      this.#name +
+      ", Description: " +
+      this.#description +
+      ", Location: " +
+      this.#location
+    );
+  }
+}
+
+// Objeto Coordinate para definir coordenadas.
+class Coordinate {
+  #latitude;
+  #longitude;
+
+  constructor(latitude = 0, longitude = 0) {
+    latitude = typeof latitude !== "undefined" ? Number(latitude).valueOf() : 0;
+    if (Number.isNaN(latitude) || latitude < -90 || latitude > 90)
+      throw new InvalidValueException("latitude", latitude);
+    longitude =
+      typeof longitude !== "undefined" ? Number(longitude).valueOf() : 0;
+    if (Number.isNaN(longitude) || longitude < -180 || longitude > 180)
+      throw new InvalidValueException("longitude", longitude);
+
+    this.#latitude = latitude;
+    this.#longitude = longitude;
+  }
+
+  get latitude() {
+    return this.#latitude;
+  }
+  set latitude(value) {
+    value = typeof value !== "undefined" ? Number(value).valueOf() : 0;
+    if (Number.isNaN(value) || value < -90 || value > 90)
+      throw new InvalidValueException("latitude", value);
+    this.#latitude = value;
+  }
+
+  get longitude() {
+    return this.#longitude;
+  }
+  set longitude(value) {
+    value = typeof value !== "undefined" ? Number(value).valueOf() : 0;
+    if (Number.isNaN(value) || value < -180 || value > 180)
+      throw new InvalidValueException("longitude", value);
+    this.#longitude = value;
+  }
+
+  toString() {
+    return "Latitude: " + this.#latitude + " Longitude: " + this.#longitude;
   }
 }
