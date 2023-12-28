@@ -354,3 +354,5 @@ class Coordinate {
     return "Latitude: " + this.#latitude + " Longitude: " + this.#longitude;
   }
 }
+
+export { Dish, Category, Allergen, Menu, Restaurant, Coordinate };

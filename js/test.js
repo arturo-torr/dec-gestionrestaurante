@@ -1,3 +1,13 @@
+import {
+  Dish,
+  Category,
+  Allergen,
+  Menu,
+  Restaurant,
+  Coordinate,
+} from "./objects.js";
+
+import { RestaurantsManager } from "./restaurantsmanager.js";
 function test() {
   try {
     console.log("--- Testeando Dish ---");
@@ -70,6 +80,53 @@ function test() {
 
     console.log("Coordenadas: " + coords.toString());
     console.log("Restaurante: " + rest.toString());
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  try {
+    let rm = RestaurantsManager.getInstance();
+    console.log(rm);
+
+    let cat1 = new Category("Categoria 1");
+    let cat2 = new Category("Categoria 2");
+    let men1 = new Menu("Menu 1");
+    let men2 = new Menu("Menu 2");
+    let all1 = new Allergen("Allergen 1");
+    let all2 = new Allergen("Allergen 2");
+    let dish1 = new Dish("Lentejas con arroz");
+    let dish2 = new Dish("Tortilla de patatas");
+    let res1 = new Restaurant("Restaurant 1");
+    let res2 = new Restaurant("Restaurant 2");
+
+    rm.addCategory(cat1, cat2);
+    rm.removeCategory(cat1);
+    rm.addCategory(cat1);
+
+    rm.addMenu(men1).addMenu(men2);
+    rm.removeMenu(men1);
+
+    rm.addAllergen(all1, all2);
+    rm.removeAllergen(all2);
+
+    rm.addDish(dish1, dish2);
+    rm.removeDish(dish2);
+
+    rm.addRestaurant(res1).addRestaurant(res2);
+    rm.removeRestaurant(res1);
+
+    rm.assignCategoryToDish(cat1, dish2, dish1);
+    rm.assignCategoryToDish(cat2, dish2, dish1);
+
+    rm.desassignCategoryToDish(cat2, dish1, dish2);
+
+    rm.assignAllergenToDish(all2, dish1, dish2);
+    rm.desassignAllergenToDish(all2, dish2);
+
+    rm.assignDishToMenu(men1, dish1, dish2);
+    rm.desassignDishToMenu(men1, dish1);
+
+    console.log(rm);
   } catch (error) {
     console.log(error.message);
   }

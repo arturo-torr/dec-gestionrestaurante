@@ -34,3 +34,5 @@ class InvalidValueException extends BaseException {
     this.name = "EmptyValueException";
   }
 }
+
+export { BaseException, EmptyValueException, InvalidValueException };
