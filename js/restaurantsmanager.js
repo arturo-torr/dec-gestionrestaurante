@@ -133,6 +133,11 @@ const RestaurantsManager = (function () {
       return category.dishes.findIndex((x) => x.dish.name === dish.name);
     }
 
+    // Función interna que permite obtener la posición de un plato en una alérgeno determinado
+    #getDishPositionInAllergen(dish, allergen) {
+      return allergen.dishes.findIndex((x) => x.dish.name === dish.name);
+    }
+
     // Función interna que permite el ordenado de categorías por nombre
     #sortCategoriesFunc = (catA, catB) =>
       catA.category.name.toLocaleLowerCase() <
@@ -455,16 +460,22 @@ const RestaurantsManager = (function () {
         throw new ObjecManagerException("category", "Category");
       }
 
+      // Se obtiene la posición de la categoría
       let posCategory = this.#getCategoryPosition(category);
+
+      // Si existe, se realizan las acciones
       if (posCategory !== -1) {
         for (const dish of dishes) {
           if (!(dish instanceof Dish)) {
             throw new ObjecManagerException("dish", "Dish");
           }
+          // Se obtiene la posición del plato en la categoría
           let posDish = this.#getDishPositionInCategory(
             dish,
             this.#categories[posCategory]
           );
+
+          // Si existe, se elimina, y si no, lanza una excepción
           if (posDish !== -1) {
             this.#categories[posCategory].dishes.splice(posDish, 1);
           } else {
@@ -475,7 +486,56 @@ const RestaurantsManager = (function () {
           }
         }
       } else {
+        // Si no existe lanza una excepción
         throw new ObjectNotExistException(category);
+      }
+      return this;
+    }
+
+    // Función que permite asignar platos a una categoría determinada
+    assignAllergenToDish(allergen, ...dishes) {
+      if (!(allergen instanceof Allergen)) {
+        throw new ObjecManagerException("allergen", "Allergen");
+      }
+
+      // Obtenemos la posición del alérgeno
+      let posAllergen = this.#getAllergenPosition(allergen);
+
+      // Si no existe, lo añadimos y volvemos a obtener la posición
+      if (posAllergen === -1) {
+        this.addAllergen(allergen);
+        posAllergen = this.#getAllergenPosition(allergen);
+      }
+
+      // Recorre el spread
+      for (const dish of dishes) {
+        if (!(dish instanceof Dish)) {
+          throw new ObjecManagerException("dish", "Dish");
+        }
+
+        // Obtiene la posición del plato
+        let posDish = this.#getDishPosition(dish);
+
+        // Si el plato no existe, lo añade y vuelve a obtener la posición
+        if (posDish === -1) {
+          this.addDish(dish);
+          posDish = this.#getDishPosition(dish);
+        }
+
+        // Obtenemos la posición del plato en la categoría
+        const position = this.#getDishPositionInAllergen(
+          dish,
+          this.#allergens[posAllergen]
+        );
+
+        // Si el plato no existe, se añade y se ordena
+        if (position === -1) {
+          this.#allergens[posAllergen].dishes.push(this.#dishes[posDish]);
+          this.#allergens[posAllergen].dishes.sort(this.#sortDishesFunc);
+        } else {
+          // Si existe, lanza una excepción
+          throw new DishExistInCategoryException(dish, allergen);
+        }
       }
       return this;
     }
