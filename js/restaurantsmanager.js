@@ -57,8 +57,8 @@ class ObjectNotExistException extends ManagerException {
   }
 }
 
-// Excepción que se da cuando un plato ya está asignado en una categoría
-class DishExistInCategoryException extends ManagerException {
+// Excepción que se da cuando un plato ya está asignado
+class DishExistException extends ManagerException {
   constructor(dish, category, fileName, lineNumber) {
     super(
       `Error: The ${dish.name} already exist in ${category.name}.`,
@@ -67,12 +67,12 @@ class DishExistInCategoryException extends ManagerException {
     );
     this.category = category;
     this.dish = dish;
-    this.name = "DishExistInCategoryException";
+    this.name = "DishExistException";
   }
 }
 
-// Excepción que se da cuando un plato no existe en una categoría
-class DishNotExistInCategoryException extends ManagerException {
+// Excepción que se da cuando un plato no existe
+class DishNotExistException extends ManagerException {
   constructor(dish, category, fileName, lineNumber) {
     super(
       `Error: The ${dish.name} doesn't exist in ${category.name}.`,
@@ -81,7 +81,7 @@ class DishNotExistInCategoryException extends ManagerException {
     );
     this.category = category;
     this.dish = dish;
-    this.name = "DishNotExistInCategoryException";
+    this.name = "DishNotExistException";
   }
 }
 // Patrón Singleton para el objeto de manager de restaurantes
@@ -448,7 +448,7 @@ const RestaurantsManager = (function () {
           this.#categories[posCategory].dishes.sort(this.#sortDishesFunc);
         } else {
           // Si existe, lanza una excepción
-          throw new DishExistInCategoryException(dish, category);
+          throw new DishExistException(dish, category);
         }
       }
       return this;
@@ -479,7 +479,7 @@ const RestaurantsManager = (function () {
           if (posDish !== -1) {
             this.#categories[posCategory].dishes.splice(posDish, 1);
           } else {
-            throw new DishNotExistInCategoryException(
+            throw new DishNotExistException(
               dish,
               this.#categories[posCategory].category
             );
@@ -492,7 +492,7 @@ const RestaurantsManager = (function () {
       return this;
     }
 
-    // Función que permite asignar platos a una categoría determinada
+    // Función que permite asignar platos a una alérgeno determinado
     assignAllergenToDish(allergen, ...dishes) {
       if (!(allergen instanceof Allergen)) {
         throw new ObjecManagerException("allergen", "Allergen");
@@ -534,8 +534,46 @@ const RestaurantsManager = (function () {
           this.#allergens[posAllergen].dishes.sort(this.#sortDishesFunc);
         } else {
           // Si existe, lanza una excepción
-          throw new DishExistInCategoryException(dish, allergen);
+          throw new DishExistException(dish, allergen);
         }
+      }
+      return this;
+    }
+
+    // Función que permite desasignar platos de una categoría concreta
+    desassignAllergenToDish(allergen, ...dishes) {
+      if (!(allergen instanceof Allergen)) {
+        throw new ObjecManagerException("allergen", "Allergen");
+      }
+
+      // Se obtiene la posición de la categoría
+      let posAllergen = this.#getAllergenPosition(allergen);
+
+      // Si existe, se realizan las acciones
+      if (posAllergen !== -1) {
+        for (const dish of dishes) {
+          if (!(dish instanceof Dish)) {
+            throw new ObjecManagerException("dish", "Dish");
+          }
+          // Se obtiene la posición del plato en la categoría
+          let posDish = this.#getDishPositionInAllergen(
+            dish,
+            this.#allergens[posAllergen]
+          );
+
+          // Si existe, se elimina, y si no, lanza una excepción
+          if (posDish !== -1) {
+            this.#allergens[posAllergen].dishes.splice(posDish, 1);
+          } else {
+            throw new DishNotExistException(
+              dish,
+              this.#allergens[posAllergen].allergen
+            );
+          }
+        }
+      } else {
+        // Si no existe lanza una excepción
+        throw new ObjectNotExistException(allergen);
       }
       return this;
     }

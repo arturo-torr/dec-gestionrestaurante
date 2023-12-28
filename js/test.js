@@ -121,6 +121,7 @@ function test() {
     rm.desassignCategoryToDish(cat2, dish1, dish2);
 
     rm.assignAllergenToDish(all2, dish1, dish2);
+    rm.desassignAllergenToDish(all2, dish2);
 
     console.log(rm);
   } catch (error) {
