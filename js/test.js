@@ -92,6 +92,8 @@ function test() {
     let cat2 = new Category("Categoria 2");
     let men1 = new Menu("Menu 1");
     let men2 = new Menu("Menu 2");
+    let all1 = new Allergen("Allergen 1");
+    let all2 = new Allergen("Allergen 2");
 
     rm.addCategory(cat1, cat2);
     rm.removeCategory(cat1);
@@ -99,7 +101,9 @@ function test() {
 
     rm.addMenu(men1).addMenu(men2);
     rm.removeMenu(men1);
-    rm.removeMenu(men1);
+
+    rm.addAllergen(all1, all2);
+    rm.removeAllergen(all2);
     console.log(rm);
   } catch (error) {
     console.log(error.message);

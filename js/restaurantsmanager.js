@@ -82,6 +82,13 @@ const RestaurantsManager = (function () {
       return this.#menus.findIndex((x) => x.menu.name === menu.name);
     }
 
+    // Función interna que permite obtener la posición de un alérgeno
+    #getAllergenPosition(allergen) {
+      return this.#allergens.findIndex(
+        (x) => x.allergen.name === allergen.name
+      );
+    }
+
     // Función interna que permite el ordenado de categorías por nombre
     #sortCategoriesFunc = (catA, catB) =>
       catA.category.name.toLocaleLowerCase() <
@@ -92,6 +99,13 @@ const RestaurantsManager = (function () {
     // Función interna que permite el ordenado de categorías por nombre
     #sortMenusFunc = (catA, catB) =>
       catA.menu.name.toLocaleLowerCase() < catB.menu.name.toLocaleLowerCase()
+        ? -1
+        : 1;
+
+    // Función interna que permite el ordenado de alérgenos por nombre
+    #sortAllergensFunc = (catA, catB) =>
+      catA.allergen.name.toLocaleLowerCase() <
+      catB.allergen.name.toLocaleLowerCase()
         ? -1
         : 1;
 
@@ -152,6 +166,7 @@ const RestaurantsManager = (function () {
       });
     }
 
+    // Permite añadir una o más categorías siempre y cuando sean una instancia de Category
     addCategory(...categories) {
       for (const category of categories) {
         if (!(category instanceof Category)) {
@@ -170,6 +185,7 @@ const RestaurantsManager = (function () {
       return this;
     }
 
+    // Permite eliminar una o más categorías, siempre que sea una instancia de Category y esté registrada
     removeCategory(...categories) {
       for (const category of categories) {
         if (!(category instanceof Category)) {
@@ -185,6 +201,7 @@ const RestaurantsManager = (function () {
       return this;
     }
 
+    // Permite añadir uno o más menús siempre y cuando sean una instancia de Menú
     addMenu(...menus) {
       for (const menu of menus) {
         if (!(menu instanceof Menu)) {
@@ -204,6 +221,7 @@ const RestaurantsManager = (function () {
       return this;
     }
 
+    // Permite eliminar uno o más menús, siempre que sea una instancia de Menú y esté registrado
     removeMenu(...menus) {
       for (const menu of menus) {
         if (!(menu instanceof Menu)) {
@@ -214,6 +232,41 @@ const RestaurantsManager = (function () {
           this.#menus.splice(position, 1);
         } else {
           throw new ObjectNotExistException(menu);
+        }
+      }
+      return this;
+    }
+
+    // Permite añadir uno o más alérgenos siempre y cuando sean una instancia de Allergen
+    addAllergen(...allergens) {
+      for (const allergen of allergens) {
+        if (!(allergen instanceof Allergen)) {
+          throw new ObjecManagerException("allergen", "Allergen");
+        }
+        const position = this.#getAllergenPosition(allergen);
+        if (position === -1) {
+          this.#allergens.push({
+            allergen,
+          });
+          this.#allergens.sort(this.#sortAllergensFunc);
+        } else {
+          throw new ObjectExistsException(allergen);
+        }
+      }
+      return this;
+    }
+
+    // Permite eliminar uno o más alérgenos, siempre que sea una instancia de Allergen y esté registrado
+    removeAllergen(...allergens) {
+      for (const allergen of allergens) {
+        if (!(allergen instanceof Allergen)) {
+          throw new ObjecManagerException("allergen", "Allergen");
+        }
+        const position = this.#getAllergenPosition(allergen);
+        if (position !== -1) {
+          this.#allergens.splice(position, 1);
+        } else {
+          throw new ObjectNotExistException(allergen);
         }
       }
       return this;
