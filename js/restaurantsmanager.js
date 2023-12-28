@@ -630,6 +630,38 @@ const RestaurantsManager = (function () {
       }
       return this;
     }
+
+    // Función que permite desasignar platos de un menú concreto
+    desassignDishToMenu(menu, ...dishes) {
+      if (!(menu instanceof Menu)) {
+        throw new ObjecManagerException("menu", "Menu");
+      }
+
+      // Se obtiene la posición de la categoría
+      let posMenu = this.#getMenuPosition(menu);
+
+      // Si existe, se realizan las acciones
+      if (posMenu !== -1) {
+        for (const dish of dishes) {
+          if (!(dish instanceof Dish)) {
+            throw new ObjecManagerException("dish", "Dish");
+          }
+          // Se obtiene la posición del plato en la categoría
+          let posDish = this.#getDishPositionInMenu(dish, this.#menus[posMenu]);
+
+          // Si existe, se elimina, y si no, lanza una excepción
+          if (posDish !== -1) {
+            this.#menus[posMenu].dishes.splice(posDish, 1);
+          } else {
+            throw new DishNotExistException(dish, this.#menus[posMenu].menu);
+          }
+        }
+      } else {
+        // Si no existe lanza una excepción
+        throw new ObjectNotExistException(menu);
+      }
+      return this;
+    }
   }
 
   function init() {
