@@ -94,6 +94,13 @@ const RestaurantsManager = (function () {
       return this.#dishes.findIndex((x) => x.dish.name === dish.name);
     }
 
+    // Función interna que permite obtener la posición de un restaurante
+    #getRestaurantPosition(restaurant) {
+      return this.#restaurants.findIndex(
+        (x) => x.restaurant.name === restaurant.name
+      );
+    }
+
     // Función interna que permite el ordenado de categorías por nombre
     #sortCategoriesFunc = (catA, catB) =>
       catA.category.name.toLocaleLowerCase() <
@@ -117,6 +124,13 @@ const RestaurantsManager = (function () {
     // Función interna que permite el ordenado de alérgenos por nombre
     #sortDishesFunc = (catA, catB) =>
       catA.dish.name.toLocaleLowerCase() < catB.dish.name.toLocaleLowerCase()
+        ? -1
+        : 1;
+
+    // Función interna que permite el ordenado de restaurantes por nombre
+    #sortRestaurantsFunc = (catA, catB) =>
+      catA.restaurant.name.toLocaleLowerCase() <
+      catB.restaurant.name.toLocaleLowerCase()
         ? -1
         : 1;
 
@@ -308,13 +322,48 @@ const RestaurantsManager = (function () {
     removeDish(...dishes) {
       for (const dish of dishes) {
         if (!(dish instanceof Dish)) {
-          throw new ObjecManagerException("dish", "Dishesh");
+          throw new ObjecManagerException("dish", "Dishes");
         }
         const position = this.#getDishPosition(dish);
         if (position !== -1) {
           this.#dishes.splice(position, 1);
         } else {
           throw new ObjectNotExistException(dish);
+        }
+      }
+      return this;
+    }
+
+    // Permite añadir uno o más restaurantes siempre y cuando sean una instancia de Restaurant
+    addRestaurant(...restaurants) {
+      for (const restaurant of restaurants) {
+        if (!(restaurant instanceof Restaurant)) {
+          throw new ObjecManagerException("restaurant", "Restaurant");
+        }
+        const position = this.#getRestaurantPosition(restaurant);
+        if (position === -1) {
+          this.#restaurants.push({
+            restaurant,
+          });
+          this.#restaurants.sort(this.#sortRestaurantsFunc);
+        } else {
+          throw new ObjectExistsException(restaurant);
+        }
+      }
+      return this;
+    }
+
+    // Permite eliminar uno o más restaurantes, siempre que sea una instancia de Restaurant y esté registrado
+    removeRestaurant(...restaurants) {
+      for (const restaurant of restaurants) {
+        if (!(restaurant instanceof Restaurant)) {
+          throw new ObjecManagerException("restaurant", "Restaurant");
+        }
+        const position = this.#getRestaurantPosition(restaurant);
+        if (position !== -1) {
+          this.#restaurants.splice(position, 1);
+        } else {
+          throw new ObjectNotExistException(restaurant);
         }
       }
       return this;
