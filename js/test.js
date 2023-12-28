@@ -1,3 +1,13 @@
+import {
+  Dish,
+  Category,
+  Allergen,
+  Menu,
+  Restaurant,
+  Coordinate,
+} from "./objects.js";
+
+import { RestaurantsManager } from "./restaurantsmanager.js";
 function test() {
   try {
     console.log("--- Testeando Dish ---");
@@ -70,6 +80,27 @@ function test() {
 
     console.log("Coordenadas: " + coords.toString());
     console.log("Restaurante: " + rest.toString());
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  try {
+    let rm = RestaurantsManager.getInstance();
+    console.log(rm);
+
+    let cat1 = new Category("Categoria 1");
+    let cat2 = new Category("Categoria 2");
+    let men1 = new Menu("Menu 1");
+    let men2 = new Menu("Menu 2");
+
+    rm.addCategory(cat1, cat2);
+    rm.removeCategory(cat1);
+    rm.addCategory(cat1);
+
+    rm.addMenu(men1).addMenu(men2);
+    rm.removeMenu(men1);
+    rm.removeMenu(men1);
+    console.log(rm);
   } catch (error) {
     console.log(error.message);
   }
