@@ -94,8 +94,8 @@ function test() {
     let men2 = new Menu("Menu 2");
     let all1 = new Allergen("Allergen 1");
     let all2 = new Allergen("Allergen 2");
-    let dish1 = new Dish("Dish 1");
-    let dish2 = new Dish("Dish 2");
+    let dish1 = new Dish("Lentejas con arroz");
+    let dish2 = new Dish("Tortilla de patatas");
     let res1 = new Restaurant("Restaurant 1");
     let res2 = new Restaurant("Restaurant 2");
 
@@ -114,6 +114,10 @@ function test() {
 
     rm.addRestaurant(res1).addRestaurant(res2);
     rm.removeRestaurant(res1);
+
+    rm.assignCategoryToDish(cat1, dish2, dish1);
+    rm.assignCategoryToDish(cat2, dish2, dish1);
+
     console.log(rm);
   } catch (error) {
     console.log(error.message);

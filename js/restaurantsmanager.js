@@ -57,6 +57,20 @@ class ObjectNotExistException extends ManagerException {
   }
 }
 
+// Excepción que se da cuando un plato ya está asignado en una categoría
+class DishExistInCategoryException extends ManagerException {
+  constructor(dish, category, fileName, lineNumber) {
+    super(
+      `Error: The ${dish.name} already exist in ${category.name}.`,
+      fileName,
+      lineNumber
+    );
+    this.category = category;
+    this.dish = dish;
+    this.name = "DishExistInCategoryException";
+  }
+}
+
 // Patrón Singleton para el objeto de manager de restaurantes
 const RestaurantsManager = (function () {
   let instantiated;
@@ -99,6 +113,11 @@ const RestaurantsManager = (function () {
       return this.#restaurants.findIndex(
         (x) => x.restaurant.name === restaurant.name
       );
+    }
+
+    // Función interna que permite obtener la posición de un plato en una categoría determinada
+    #getDishPositionInCategory(dish, category) {
+      return category.dishes.findIndex((x) => x.dish.name === dish.name);
     }
 
     // Función interna que permite el ordenado de categorías por nombre
@@ -201,6 +220,7 @@ const RestaurantsManager = (function () {
         if (position === -1) {
           this.#categories.push({
             category,
+            dishes: [],
           });
           this.#categories.sort(this.#sortCategoriesFunc);
         } else {
@@ -272,6 +292,7 @@ const RestaurantsManager = (function () {
         if (position === -1) {
           this.#allergens.push({
             allergen,
+            dishes: [],
           });
           this.#allergens.sort(this.#sortAllergensFunc);
         } else {
@@ -307,8 +328,6 @@ const RestaurantsManager = (function () {
         if (position === -1) {
           this.#dishes.push({
             dish,
-            categories: [],
-            allergens: [],
           });
           this.#dishes.sort(this.#sortDishesFunc);
         } else {
@@ -364,6 +383,53 @@ const RestaurantsManager = (function () {
           this.#restaurants.splice(position, 1);
         } else {
           throw new ObjectNotExistException(restaurant);
+        }
+      }
+      return this;
+    }
+
+    assignCategoryToDish(category, ...dishes) {
+      if (!(category instanceof Category)) {
+        throw new ObjecManagerException("category", "Category");
+      }
+
+      // Obtenemos la posición de la categoría
+      let posCategory = this.#getCategoryPosition(category);
+
+      // Si no existe, la añadimos y volvemos a obtener la posición
+      if (posCategory === -1) {
+        this.addCategory(category);
+        posCategory = this.#getCategoryPosition(category);
+      }
+
+      // Recorre el spread
+      for (const dish of dishes) {
+        if (!(dish instanceof Dish)) {
+          throw new ObjecManagerException("dish", "Dish");
+        }
+
+        // Obtiene la posición del plato
+        let posDish = this.#getDishPosition(dish);
+
+        // Si el plato no existe, lo añade y vuelve a obtener la posición
+        if (posDish === -1) {
+          this.addDish(dish);
+          posDish = this.#getDishPosition(dish);
+        }
+
+        // Obtenemos la posición del plato en la categoría
+        const position = this.#getDishPositionInCategory(
+          dish,
+          this.#categories[posCategory]
+        );
+
+        // Si el plato no existe, se añade y se ordena
+        if (position === -1) {
+          this.#categories[posCategory].dishes.push(this.#dishes[posDish]);
+          this.#categories[posCategory].dishes.sort(this.#sortDishesFunc);
+        } else {
+          // Si existe, lanza una excepción
+          throw new DishExistInCategoryException(dish, category);
         }
       }
       return this;
