@@ -44,7 +44,7 @@ class ObjectExistsException extends ManagerException {
   }
 }
 
-// Excepción que se da cuando una categoría no existe
+// Excepción que se da cuando una objeto no existe
 class ObjectNotExistException extends ManagerException {
   constructor(object, fileName, lineNumber) {
     super(
@@ -71,6 +71,19 @@ class DishExistInCategoryException extends ManagerException {
   }
 }
 
+// Excepción que se da cuando un plato no existe en una categoría
+class DishNotExistInCategoryException extends ManagerException {
+  constructor(dish, category, fileName, lineNumber) {
+    super(
+      `Error: The ${dish.name} doesn't exist in ${category.name}.`,
+      fileName,
+      lineNumber
+    );
+    this.category = category;
+    this.dish = dish;
+    this.name = "DishNotExistInCategoryException";
+  }
+}
 // Patrón Singleton para el objeto de manager de restaurantes
 const RestaurantsManager = (function () {
   let instantiated;
@@ -388,6 +401,7 @@ const RestaurantsManager = (function () {
       return this;
     }
 
+    // Función que permite asignar platos a una categoría determinada
     assignCategoryToDish(category, ...dishes) {
       if (!(category instanceof Category)) {
         throw new ObjecManagerException("category", "Category");
@@ -431,6 +445,37 @@ const RestaurantsManager = (function () {
           // Si existe, lanza una excepción
           throw new DishExistInCategoryException(dish, category);
         }
+      }
+      return this;
+    }
+
+    // Función que permite desasignar platos de una categoría concreta
+    desassignCategoryToDish(category, ...dishes) {
+      if (!(category instanceof Category)) {
+        throw new ObjecManagerException("category", "Category");
+      }
+
+      let posCategory = this.#getCategoryPosition(category);
+      if (posCategory !== -1) {
+        for (const dish of dishes) {
+          if (!(dish instanceof Dish)) {
+            throw new ObjecManagerException("dish", "Dish");
+          }
+          let posDish = this.#getDishPositionInCategory(
+            dish,
+            this.#categories[posCategory]
+          );
+          if (posDish !== -1) {
+            this.#categories[posCategory].dishes.splice(posDish, 1);
+          } else {
+            throw new DishNotExistInCategoryException(
+              dish,
+              this.#categories[posCategory].category
+            );
+          }
+        }
+      } else {
+        throw new ObjectNotExistException(category);
       }
       return this;
     }

@@ -118,6 +118,8 @@ function test() {
     rm.assignCategoryToDish(cat1, dish2, dish1);
     rm.assignCategoryToDish(cat2, dish2, dish1);
 
+    rm.desassignCategoryToDish(cat2, dish1, dish2);
+
     console.log(rm);
   } catch (error) {
     console.log(error.message);
