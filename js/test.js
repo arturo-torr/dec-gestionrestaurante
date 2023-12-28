@@ -123,6 +123,9 @@ function test() {
     rm.assignAllergenToDish(all2, dish1, dish2);
     rm.desassignAllergenToDish(all2, dish2);
 
+    rm.assignDishToMenu(men1, dish1);
+    rm.assignDishToMenu(men2, dish1);
+
     console.log(rm);
   } catch (error) {
     console.log(error.message);
