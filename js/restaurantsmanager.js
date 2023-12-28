@@ -89,6 +89,11 @@ const RestaurantsManager = (function () {
       );
     }
 
+    // Función interna que permite obtener la posición de un plato
+    #getDishPosition(dish) {
+      return this.#dishes.findIndex((x) => x.dish.name === dish.name);
+    }
+
     // Función interna que permite el ordenado de categorías por nombre
     #sortCategoriesFunc = (catA, catB) =>
       catA.category.name.toLocaleLowerCase() <
@@ -106,6 +111,12 @@ const RestaurantsManager = (function () {
     #sortAllergensFunc = (catA, catB) =>
       catA.allergen.name.toLocaleLowerCase() <
       catB.allergen.name.toLocaleLowerCase()
+        ? -1
+        : 1;
+
+    // Función interna que permite el ordenado de alérgenos por nombre
+    #sortDishesFunc = (catA, catB) =>
+      catA.dish.name.toLocaleLowerCase() < catB.dish.name.toLocaleLowerCase()
         ? -1
         : 1;
 
@@ -267,6 +278,43 @@ const RestaurantsManager = (function () {
           this.#allergens.splice(position, 1);
         } else {
           throw new ObjectNotExistException(allergen);
+        }
+      }
+      return this;
+    }
+
+    // Permite añadir uno o más platos siempre y cuando sean una instancia de Dish
+    addDish(...dishes) {
+      for (const dish of dishes) {
+        if (!(dish instanceof Dish)) {
+          throw new ObjecManagerException("dish", "Dish");
+        }
+        const position = this.#getDishPosition(dish);
+        if (position === -1) {
+          this.#dishes.push({
+            dish,
+            categories: [],
+            allergens: [],
+          });
+          this.#dishes.sort(this.#sortDishesFunc);
+        } else {
+          throw new ObjectExistsException(dish);
+        }
+      }
+      return this;
+    }
+
+    // Permite eliminar uno o más platos, siempre que sea una instancia de Dish y esté registrado
+    removeDish(...dishes) {
+      for (const dish of dishes) {
+        if (!(dish instanceof Dish)) {
+          throw new ObjecManagerException("dish", "Dishesh");
+        }
+        const position = this.#getDishPosition(dish);
+        if (position !== -1) {
+          this.#dishes.splice(position, 1);
+        } else {
+          throw new ObjectNotExistException(dish);
         }
       }
       return this;
