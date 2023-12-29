@@ -724,6 +724,28 @@ const RestaurantsManager = (function () {
         yield dish;
       }
     }
+
+    // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
+    // Devolverá un iterador con los platos de esa categoría
+    *getDishesWithAllergen(allergen, order = this.#sortDishesFunc) {
+      if (!(allergen instanceof Allergen)) {
+        throw new ObjecManagerException("allergen", "Allergen");
+      }
+
+      // Se obtiene la posición del alérgeno
+      let posAllergen = this.#getAllergenPosition(allergen);
+
+      // Asignamos a una variable los alérgenos con los platos para no alterar la referencia original del array de alérgenos
+      const array = [].concat(this.#allergens[posAllergen].dishes);
+
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const dish of array) {
+        yield dish;
+      }
+    }
   }
 
   function init() {

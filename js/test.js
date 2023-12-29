@@ -124,8 +124,8 @@ function test() {
 
     // rm.desassignCategoryToDish(cat2, dish1, dish2);
 
-    rm.assignAllergenToDish(all2, dish1, dish2);
-    rm.desassignAllergenToDish(all2, dish2);
+    rm.assignAllergenToDish(all2, dish1, dish2, dish3);
+    //rm.desassignAllergenToDish(all2, dish2);
 
     rm.assignDishToMenu(men1, dish1, dish2, dish3);
     rm.desassignDishToMenu(men1, dish2);
@@ -141,10 +141,16 @@ function test() {
 
       return pos;
     }
-    let dishesCat1 = rm.getDishesInCategory(cat1);
+    let dishesCat1 = rm.getDishesInCategory(cat1, sortDescription);
     console.log(dishesCat1.next());
     console.log(dishesCat1.next());
     console.log(dishesCat1.next());
+
+    console.log("--- Platos con alérgenos ---");
+    let dishesAll2 = rm.getDishesWithAllergen(all2);
+    console.log(dishesAll2.next());
+    console.log(dishesAll2.next());
+    console.log(dishesAll2.next());
 
     console.log(rm);
   } catch (error) {
