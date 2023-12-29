@@ -97,6 +97,11 @@ class Dish {
       this.#ingredients.join()
     );
   }
+
+  // Permite obtener un array de todos los ingredientes de ese plato
+  getIngredients() {
+    return [].concat(...this.ingredients);
+  }
 }
 
 // Objeto con la que será creada la estructura de categorías

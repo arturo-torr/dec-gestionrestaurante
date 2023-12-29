@@ -95,7 +95,24 @@ function test() {
     let all1 = new Allergen("Allergen 1");
     let all2 = new Allergen("Allergen 2");
     let dish1 = new Dish("Lentejas con arroz");
+    dish1.description = "a";
+    dish1.ingredients = [
+      "Lentejas",
+      "Pimentón",
+      "Chorizo",
+      "Arroz",
+      "Patata",
+      "Laurel",
+      "Pimienta",
+      "Sal",
+      "Agua",
+    ];
     let dish2 = new Dish("Tortilla de patatas");
+    dish2.description = "b";
+    dish2.ingredients = ["Huevo", "Patata", "Aceite", "Sal"];
+    let dish3 = new Dish("Pollo asado");
+    dish3.description = "c";
+    dish3.ingredients = ["Pollo", "Sazonador", "Agua", "Vino"];
     let res1 = new Restaurant("Restaurant 1");
     let res2 = new Restaurant("Restaurant 2");
 
@@ -115,20 +132,48 @@ function test() {
     rm.addRestaurant(res1).addRestaurant(res2);
     rm.removeRestaurant(res1);
 
-    rm.assignCategoryToDish(cat1, dish2, dish1);
-    rm.assignCategoryToDish(cat2, dish2, dish1);
+    rm.assignCategoryToDish(cat1, dish2, dish1, dish3);
+    rm.assignCategoryToDish(cat2, dish2, dish1, dish3);
 
-    rm.desassignCategoryToDish(cat2, dish1, dish2);
+    // rm.desassignCategoryToDish(cat2, dish1, dish2);
 
-    rm.assignAllergenToDish(all2, dish1, dish2);
-    rm.desassignAllergenToDish(all2, dish2);
+    rm.assignAllergenToDish(all2, dish1, dish2, dish3);
+    //rm.desassignAllergenToDish(all2, dish2);
 
-    rm.assignDishToMenu(men1, dish1, dish2);
-    rm.desassignDishToMenu(men1, dish1);
+    rm.assignDishToMenu(men1, dish1, dish2, dish3);
+    rm.desassignDishToMenu(men1, dish2);
 
+    rm.changeDishesPositionsInMenu(men1, dish3, dish1);
+
+    function sortDescription(catA, catB) {
+      let pos;
+      catA.dish.description.toLocaleLowerCase() <
+      catB.dish.description.toLocaleLowerCase()
+        ? (pos = -1)
+        : (pos = 1);
+
+      return pos;
+    }
+    let dishesCat1 = rm.getDishesInCategory(cat1, sortDescription);
+    console.log(dishesCat1.next());
+    console.log(dishesCat1.next());
+    console.log(dishesCat1.next());
+
+    console.log("--- Platos con alérgenos ---");
+    let dishesAll2 = rm.getDishesWithAllergen(all2);
+    console.log(dishesAll2.next());
+    console.log(dishesAll2.next());
+    console.log(dishesAll2.next());
+
+    console.log("--- Ingredientes con que comienzan con P ---");
+    let dishesWithInitialP = rm.findDishes(dish1);
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
     console.log(rm);
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 }
 

@@ -551,7 +551,7 @@ const RestaurantsManager = (function () {
         throw new ObjecManagerException("allergen", "Allergen");
       }
 
-      // Se obtiene la posición de la categoría
+      // Se obtiene la posición del alérgeno
       let posAllergen = this.#getAllergenPosition(allergen);
 
       // Si existe, se realizan las acciones
@@ -560,7 +560,7 @@ const RestaurantsManager = (function () {
           if (!(dish instanceof Dish)) {
             throw new ObjecManagerException("dish", "Dish");
           }
-          // Se obtiene la posición del plato en la categoría
+          // Se obtiene la posición del plato en el alérgeno
           let posDish = this.#getDishPositionInAllergen(
             dish,
             this.#allergens[posAllergen]
@@ -613,7 +613,7 @@ const RestaurantsManager = (function () {
           posDish = this.#getDishPosition(dish);
         }
 
-        // Obtenemos la posición del plato en el alérgeno
+        // Obtenemos la posición del plato en el menú
         const position = this.#getDishPositionInMenu(
           dish,
           this.#menus[posMenu]
@@ -637,7 +637,7 @@ const RestaurantsManager = (function () {
         throw new ObjecManagerException("menu", "Menu");
       }
 
-      // Se obtiene la posición de la categoría
+      // Se obtiene la posición del menú
       let posMenu = this.#getMenuPosition(menu);
 
       // Si existe, se realizan las acciones
@@ -646,7 +646,7 @@ const RestaurantsManager = (function () {
           if (!(dish instanceof Dish)) {
             throw new ObjecManagerException("dish", "Dish");
           }
-          // Se obtiene la posición del plato en la categoría
+          // Se obtiene la posición del plato en el menú
           let posDish = this.#getDishPositionInMenu(dish, this.#menus[posMenu]);
 
           // Si existe, se elimina, y si no, lanza una excepción
@@ -661,6 +661,123 @@ const RestaurantsManager = (function () {
         throw new ObjectNotExistException(menu);
       }
       return this;
+    }
+
+    // Función que permite intercambiar las posiciones de dos platos en un menú
+    changeDishesPositionsInMenu(menu, dish1, dish2) {
+      if (!(menu instanceof Menu)) {
+        throw new ObjecManagerException("menu", "Menu");
+      }
+      if (!(dish1 instanceof Dish)) {
+        throw new ObjecManagerException("dish1", "Dish");
+      }
+      if (!(dish2 instanceof Dish)) {
+        throw new ObjecManagerException("dish2", "Dish");
+      }
+
+      // Se obtiene la posición del menú
+      let posMenu = this.#getMenuPosition(menu);
+
+      if (posMenu !== -1) {
+        // Se obtiene la posición del plato 1 en el menú
+        let posDish1 = this.#getDishPositionInMenu(dish1, this.#menus[posMenu]);
+        // Si no existe, lanza una excepción
+        if (posDish1 === -1)
+          throw new DishNotExistException(dish1, this.#menus[posMenu].menu);
+        // Se obtiene la posición del plato 2 en el menú
+        let posDish2 = this.#getDishPositionInMenu(dish2, this.#menus[posMenu]);
+        // Si no existe, lanza una excepción
+        if (posDish2 === -1)
+          throw new DishNotExistException(dish2, this.#menus[posMenu].menu);
+
+        // Guardamos en variables temporales los objetos
+        let tempDish1 = this.#menus[posMenu].dishes[posDish1];
+        let tempDish2 = this.#menus[posMenu].dishes[posDish2];
+
+        // Realizamos el intercambio usando las variables temporales para no afectar a las referencias originales
+        this.#menus[posMenu].dishes.splice(posDish1, 1, tempDish2);
+        this.#menus[posMenu].dishes.splice(posDish2, 1, tempDish1);
+      } else {
+        // Si no existe lanza una excepción
+        throw new ObjectNotExistException(menu);
+      }
+    }
+
+    // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
+    // Devolverá un iterador con los platos de esa categoría
+    *getDishesInCategory(category, order = this.#sortDishesFunc) {
+      if (!(category instanceof Category)) {
+        throw new ObjecManagerException("category", "Category");
+      }
+
+      // Se obtiene la posición de la categoría
+      let posCategory = this.#getCategoryPosition(category);
+
+      // Asignamos a una variable la categoría con los platos para no alterar la referencia original del array de categorías
+      const array = [].concat(this.#categories[posCategory].dishes);
+
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const dish of array) {
+        yield dish;
+      }
+    }
+
+    // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
+    // Devolverá un iterador con los platos de esa categoría
+    *getDishesWithAllergen(allergen, order = this.#sortDishesFunc) {
+      if (!(allergen instanceof Allergen)) {
+        throw new ObjecManagerException("allergen", "Allergen");
+      }
+
+      // Se obtiene la posición del alérgeno
+      let posAllergen = this.#getAllergenPosition(allergen);
+
+      // Asignamos a una variable los alérgenos con los platos para no alterar la referencia original del array de alérgenos
+      const array = [].concat(this.#allergens[posAllergen].dishes);
+
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const dish of array) {
+        yield dish;
+      }
+    }
+
+    // Función interna para ordenar ingredientes
+    #sortIngredients = (a, b) => {
+      return a < b ? -1 : 1;
+    };
+
+    // Función interna de callback que devuelve aquellos valores que empiecen con P
+    #searchIngredientsWithP(value) {
+      return value.startsWith("P");
+    }
+
+    *findDishes(
+      dish,
+      order = this.#sortIngredients,
+      search = this.#searchIngredientsWithP
+    ) {
+      if (!(dish instanceof Dish)) {
+        throw new ObjecManagerException("dish", "Dish");
+      }
+
+      // Obtenemos en un array los ingredientes del plato
+      let array = dish.getIngredients();
+
+      // Modificamos el array con la función de callback, en este caso filtrará con aquellos ingredientes que empiecen con P
+      array = array.filter(search);
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los ingredientes por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const ingredient of array) {
+        yield ingredient;
+      }
     }
   }
 
