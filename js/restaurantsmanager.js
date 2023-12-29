@@ -702,6 +702,28 @@ const RestaurantsManager = (function () {
         throw new ObjectNotExistException(menu);
       }
     }
+
+    // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
+    // Devolverá un iterador con los platos de esa categoría
+    *getDishesInCategory(category, order = this.#sortDishesFunc) {
+      if (!(category instanceof Category)) {
+        throw new ObjecManagerException("category", "Category");
+      }
+
+      // Se obtiene la posición de la categoría
+      let posCategory = this.#getCategoryPosition(category);
+
+      // Asignamos a una variable la categoría con los platos para no alterar la referencia original del array de categorías
+      const array = [].concat(this.#categories[posCategory].dishes);
+
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const dish of array) {
+        yield dish;
+      }
+    }
   }
 
   function init() {
