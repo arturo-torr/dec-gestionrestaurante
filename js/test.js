@@ -96,6 +96,7 @@ function test() {
     let all2 = new Allergen("Allergen 2");
     let dish1 = new Dish("Lentejas con arroz");
     let dish2 = new Dish("Tortilla de patatas");
+    let dish3 = new Dish("Guacamole frito");
     let res1 = new Restaurant("Restaurant 1");
     let res2 = new Restaurant("Restaurant 2");
 
@@ -123,8 +124,10 @@ function test() {
     rm.assignAllergenToDish(all2, dish1, dish2);
     rm.desassignAllergenToDish(all2, dish2);
 
-    rm.assignDishToMenu(men1, dish1, dish2);
-    rm.desassignDishToMenu(men1, dish1);
+    rm.assignDishToMenu(men1, dish1, dish2, dish3);
+    rm.desassignDishToMenu(men1, dish2);
+
+    rm.changeDishesPositionsInMenu(men1, dish3, dish1);
 
     console.log(rm);
   } catch (error) {

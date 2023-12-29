@@ -551,7 +551,7 @@ const RestaurantsManager = (function () {
         throw new ObjecManagerException("allergen", "Allergen");
       }
 
-      // Se obtiene la posición de la categoría
+      // Se obtiene la posición del alérgeno
       let posAllergen = this.#getAllergenPosition(allergen);
 
       // Si existe, se realizan las acciones
@@ -560,7 +560,7 @@ const RestaurantsManager = (function () {
           if (!(dish instanceof Dish)) {
             throw new ObjecManagerException("dish", "Dish");
           }
-          // Se obtiene la posición del plato en la categoría
+          // Se obtiene la posición del plato en el alérgeno
           let posDish = this.#getDishPositionInAllergen(
             dish,
             this.#allergens[posAllergen]
@@ -613,7 +613,7 @@ const RestaurantsManager = (function () {
           posDish = this.#getDishPosition(dish);
         }
 
-        // Obtenemos la posición del plato en el alérgeno
+        // Obtenemos la posición del plato en el menú
         const position = this.#getDishPositionInMenu(
           dish,
           this.#menus[posMenu]
@@ -637,7 +637,7 @@ const RestaurantsManager = (function () {
         throw new ObjecManagerException("menu", "Menu");
       }
 
-      // Se obtiene la posición de la categoría
+      // Se obtiene la posición del menú
       let posMenu = this.#getMenuPosition(menu);
 
       // Si existe, se realizan las acciones
@@ -646,7 +646,7 @@ const RestaurantsManager = (function () {
           if (!(dish instanceof Dish)) {
             throw new ObjecManagerException("dish", "Dish");
           }
-          // Se obtiene la posición del plato en la categoría
+          // Se obtiene la posición del plato en el menú
           let posDish = this.#getDishPositionInMenu(dish, this.#menus[posMenu]);
 
           // Si existe, se elimina, y si no, lanza una excepción
@@ -661,6 +661,46 @@ const RestaurantsManager = (function () {
         throw new ObjectNotExistException(menu);
       }
       return this;
+    }
+
+    // Función que permite intercambiar las posiciones de dos platos en un menú
+    changeDishesPositionsInMenu(menu, dish1, dish2) {
+      if (!(menu instanceof Menu)) {
+        throw new ObjecManagerException("menu", "Menu");
+      }
+      if (!(dish1 instanceof Dish)) {
+        throw new ObjecManagerException("dish1", "Dish");
+      }
+      if (!(dish2 instanceof Dish)) {
+        throw new ObjecManagerException("dish2", "Dish");
+      }
+
+      // Se obtiene la posición del menú
+      let posMenu = this.#getMenuPosition(menu);
+
+      if (posMenu !== -1) {
+        // Se obtiene la posición del plato 1 en el menú
+        let posDish1 = this.#getDishPositionInMenu(dish1, this.#menus[posMenu]);
+        // Si no existe, lanza una excepción
+        if (posDish1 === -1)
+          throw new DishNotExistException(dish1, this.#menus[posMenu].menu);
+        // Se obtiene la posición del plato 2 en el menú
+        let posDish2 = this.#getDishPositionInMenu(dish2, this.#menus[posMenu]);
+        // Si no existe, lanza una excepción
+        if (posDish2 === -1)
+          throw new DishNotExistException(dish2, this.#menus[posMenu].menu);
+
+        // Guardamos en variables temporales los objetos
+        let tempDish1 = this.#menus[posMenu].dishes[posDish1];
+        let tempDish2 = this.#menus[posMenu].dishes[posDish2];
+
+        // Realizamos el intercambio usando las variables temporales para no afectar a las referencias originales
+        this.#menus[posMenu].dishes.splice(posDish1, 1, tempDish2);
+        this.#menus[posMenu].dishes.splice(posDish2, 1, tempDish1);
+      } else {
+        // Si no existe lanza una excepción
+        throw new ObjectNotExistException(menu);
+      }
     }
   }
 
