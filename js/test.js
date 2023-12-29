@@ -96,10 +96,23 @@ function test() {
     let all2 = new Allergen("Allergen 2");
     let dish1 = new Dish("Lentejas con arroz");
     dish1.description = "a";
+    dish1.ingredients = [
+      "Lentejas",
+      "Pimentón",
+      "Chorizo",
+      "Arroz",
+      "Patata",
+      "Laurel",
+      "Pimienta",
+      "Sal",
+      "Agua",
+    ];
     let dish2 = new Dish("Tortilla de patatas");
     dish2.description = "b";
-    let dish3 = new Dish("Guacamole frito");
+    dish2.ingredients = ["Huevo", "Patata", "Aceite", "Sal"];
+    let dish3 = new Dish("Pollo asado");
     dish3.description = "c";
+    dish3.ingredients = ["Pollo", "Sazonador", "Agua", "Vino"];
     let res1 = new Restaurant("Restaurant 1");
     let res2 = new Restaurant("Restaurant 2");
 
@@ -152,6 +165,12 @@ function test() {
     console.log(dishesAll2.next());
     console.log(dishesAll2.next());
 
+    console.log("--- Ingredientes con que comienzan con P ---");
+    let dishesWithInitialP = rm.findDishes(dish1);
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
+    console.log(dishesWithInitialP.next());
     console.log(rm);
   } catch (error) {
     console.log(error);

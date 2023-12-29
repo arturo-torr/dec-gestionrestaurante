@@ -746,6 +746,39 @@ const RestaurantsManager = (function () {
         yield dish;
       }
     }
+
+    // Función interna para ordenar ingredientes
+    #sortIngredients = (a, b) => {
+      return a < b ? -1 : 1;
+    };
+
+    // Función interna de callback que devuelve aquellos valores que empiecen con P
+    #searchIngredientsWithP(value) {
+      return value.startsWith("P");
+    }
+
+    *findDishes(
+      dish,
+      order = this.#sortIngredients,
+      search = this.#searchIngredientsWithP
+    ) {
+      if (!(dish instanceof Dish)) {
+        throw new ObjecManagerException("dish", "Dish");
+      }
+
+      // Obtenemos en un array los ingredientes del plato
+      let array = dish.getIngredients();
+
+      // Modificamos el array con la función de callback, en este caso filtrará con aquellos ingredientes que empiecen con P
+      array = array.filter(search);
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los ingredientes por defecto
+      array.sort(order);
+
+      // Iterador
+      for (const ingredient of array) {
+        yield ingredient;
+      }
+    }
   }
 
   function init() {
