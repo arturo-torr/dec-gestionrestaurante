@@ -97,6 +97,14 @@ const RestaurantsManager = (function () {
     #menus = [];
     #restaurants = [];
 
+    #objectsConstructors = {
+      Dish,
+      Menu,
+      Allergen,
+      Category,
+      Restaurant,
+    };
+
     // Función interna que permite obtener la posición de una categoría
     #getCategoryPosition(category) {
       return this.#categories.findIndex(
@@ -198,8 +206,8 @@ const RestaurantsManager = (function () {
           const array = this.#categories;
           return {
             *[Symbol.iterator]() {
-              for (const arrayCat of array) {
-                yield arrayCat;
+              for (const category of array) {
+                yield category;
               }
             },
           };
@@ -779,6 +787,87 @@ const RestaurantsManager = (function () {
         yield ingredient;
       }
     }
+
+    // Función que permite crear un plato siempre y cuando no exista. Si el plato existe,
+    // Devuelve la instancia de ese plato.
+    createDish(name, type) {
+      let dish = this.#dishes.find((element) => element.dish.name === name);
+
+      if (!dish) {
+        dish = new this.#objectsConstructors[type](name);
+        // Añade el plato a la colección para que quede registrado
+        this.addDish(dish);
+      } else {
+        dish = dish.dish;
+      }
+      return dish;
+    }
+
+    // Función que permite crear un menú siempre y cuando no exista. Si el menú existe,
+    // Devuelve la instancia de ese menú.
+    createMenu(name, type) {
+      let menu = this.#menus.find((element) => element.menu.name === name);
+
+      if (!menu) {
+        menu = new this.#objectsConstructors[type](name);
+        // Añade el menú a la colección para que quede registrado
+        this.addMenu(menu);
+      } else {
+        menu = menu.menu;
+      }
+      return menu;
+    }
+
+    // Función que permite crear un alérgeno siempre y cuando no exista. Si el alérgeno existe,
+    // Devuelve la instancia de ese alérgeno.
+    createAllergen(name, type) {
+      let allergen = this.#allergens.find(
+        (element) => element.allergen.name === name
+      );
+
+      if (!allergen) {
+        allergen = new this.#objectsConstructors[type](name);
+        // Añade el alérgeno a la colección para que quede registrado
+        this.addAllergen(allergen);
+      } else {
+        allergen = allergen.allergen;
+      }
+      return allergen;
+    }
+
+    // Función que permite crear una categoría siempre y cuando no exista. Si la categoría existe,
+    // Devuelve la instancia de esa categoría.
+    createCategory(name, type) {
+      let category = this.#categories.find(
+        (element) => element.category.name === name
+      );
+
+      if (!category) {
+        category = new this.#objectsConstructors[type](name);
+        // Añade la categoría a la colección para que quede registrado
+        this.addCategory(category);
+      } else {
+        category = category.category;
+      }
+      return category;
+    }
+
+    // Función que permite crear un restaurante siempre y cuando no exista. Si el restaurante existe,
+    // Devuelve la instancia de ese restaurante.
+    createRestaurant(name, type) {
+      let restaurant = this.#restaurants.find(
+        (element) => element.restaurant.name === name
+      );
+
+      if (!restaurant) {
+        restaurant = new this.#objectsConstructors[type](name);
+        // Añade el restaurante a la colección para que quede registrado
+        this.addRestaurant(restaurant);
+      } else {
+        restaurant = restaurant.restaurant;
+      }
+      return restaurant;
+    }
   }
 
   function init() {
@@ -794,6 +883,11 @@ const RestaurantsManager = (function () {
       }
       return instantiated;
     },
+    Dish: Dish.name,
+    Menu: Menu.name,
+    Allergen: Allergen.name,
+    Category: Category.name,
+    Restaurant: Restaurant.name,
   };
 })();
 
