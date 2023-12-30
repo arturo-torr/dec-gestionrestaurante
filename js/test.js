@@ -127,7 +127,6 @@ function test() {
     rm.removeAllergen(all2);
 
     rm.addDish(dish1, dish2);
-    rm.removeDish(dish2);
 
     rm.addRestaurant(res1).addRestaurant(res2);
     rm.removeRestaurant(res1);
@@ -203,6 +202,9 @@ function test() {
     );
 
     console.log("Restaurante 3 y 4 son iguales: " + (res3 === res4));
+
+    rm.assignCategoryToDish(cat3, dish3);
+    rm.removeDish(dish3);
     console.log(rm);
   } catch (error) {
     console.log(error);
