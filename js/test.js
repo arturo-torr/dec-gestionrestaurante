@@ -155,6 +155,7 @@ function test() {
       return pos;
     }
     let dishesCat1 = rm.getDishesInCategory(cat1, sortDescription);
+    console.log("--- Platos de una determinada categoría ---");
     console.log(dishesCat1.next());
     console.log(dishesCat1.next());
     console.log(dishesCat1.next());
@@ -171,6 +172,37 @@ function test() {
     console.log(dishesWithInitialP.next());
     console.log(dishesWithInitialP.next());
     console.log(dishesWithInitialP.next());
+
+    let dish4 = rm.createDish("Patatas fritas", RestaurantsManager.Dish);
+    let dish5 = rm.createDish("Patatas fritas", RestaurantsManager.Dish);
+
+    console.log("Plato 4 y 5 son iguales: " + (dish4 === dish5));
+
+    let menu3 = rm.createMenu("Menu 3", RestaurantsManager.Menu);
+    let menu4 = rm.createMenu("Menu 3", RestaurantsManager.Menu);
+
+    console.log("Menu 3 y 4 son iguales: " + (menu3 === menu4));
+
+    let all3 = rm.createAllergen("Alergeno 3", RestaurantsManager.Allergen);
+    let all4 = rm.createAllergen("Alergeno 3", RestaurantsManager.Allergen);
+
+    console.log("Alergeno 3 y 4 son iguales: " + (all3 === all4));
+
+    let cat3 = rm.createCategory("Categoria 3", RestaurantsManager.Category);
+    let cat4 = rm.createCategory("Categoria 3", RestaurantsManager.Category);
+
+    console.log("Categoria 3 y 4 son iguales: " + (cat3 === cat4));
+
+    let res3 = rm.createRestaurant(
+      "Restaurante 3",
+      RestaurantsManager.Restaurant
+    );
+    let res4 = rm.createRestaurant(
+      "Restaurante 3",
+      RestaurantsManager.Restaurant
+    );
+
+    console.log("Restaurante 3 y 4 son iguales: " + (res3 === res4));
     console.log(rm);
   } catch (error) {
     console.log(error);
