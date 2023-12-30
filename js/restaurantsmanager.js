@@ -439,7 +439,7 @@ const RestaurantsManager = (function () {
         }
 
         // Elimina el plato de la colección de menus
-        for (const menus of this.#allergens.values()) {
+        for (const menus of this.#menus.values()) {
           let array = menus.dishes;
 
           let pos = array.findIndex(
@@ -529,7 +529,8 @@ const RestaurantsManager = (function () {
         // Si el plato no existe, se añade y se ordena
         if (position === -1) {
           this.#categories[posCategory].dishes.push(this.#dishes[posDish]);
-          this.#categories[posCategory].dishes.sort(this.#sortDishesFunc);
+          // Permite ordenar los platos si lo necesitamos
+          //this.#categories[posCategory].dishes.sort(this.#sortDishesFunc);
         } else {
           // Si existe, lanza una excepción
           throw new DishExistException(dish, category);
@@ -615,7 +616,8 @@ const RestaurantsManager = (function () {
         // Si el plato no existe, se añade y se ordena
         if (position === -1) {
           this.#allergens[posAllergen].dishes.push(this.#dishes[posDish]);
-          this.#allergens[posAllergen].dishes.sort(this.#sortDishesFunc);
+          // Permite ordenar los platos si lo necesitamos
+          //this.#allergens[posAllergen].dishes.sort(this.#sortDishesFunc);
         } else {
           // Si existe, lanza una excepción
           throw new DishExistException(dish, allergen);
@@ -701,7 +703,8 @@ const RestaurantsManager = (function () {
         // Si el plato no existe, se añade y se ordena
         if (position === -1) {
           this.#menus[posMenu].dishes.push(this.#dishes[posDish]);
-          this.#menus[posMenu].dishes.sort(this.#sortDishesFunc);
+          // Permite ordenar los platos si lo necesitamos
+          //this.#menus[posMenu].dishes.sort(this.#sortDishesFunc);
         } else {
           // Si existe, lanza una excepción
           throw new DishExistException(dish, menu);
@@ -784,7 +787,7 @@ const RestaurantsManager = (function () {
 
     // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
     // Devolverá un iterador con los platos de esa categoría
-    *getDishesInCategory(category, order = this.#sortDishesFunc) {
+    *getDishesInCategory(category, order = null) {
       if (!(category instanceof Category)) {
         throw new ObjecManagerException("category", "Category");
       }
@@ -792,21 +795,25 @@ const RestaurantsManager = (function () {
       // Se obtiene la posición de la categoría
       let posCategory = this.#getCategoryPosition(category);
 
-      // Asignamos a una variable la categoría con los platos para no alterar la referencia original del array de categorías
-      const array = [].concat(this.#categories[posCategory].dishes);
+      if (posCategory !== -1) {
+        // Asignamos a una variable la categoría con los platos para no alterar la referencia original del array de categorías
+        const array = [].concat(this.#categories[posCategory].dishes);
 
-      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
-      array.sort(order);
+        // Lo ordenamos, si hemos recibido una función, la utilizará, si no, dejará el array tal cual está
+        if (order) {
+          array.sort(order);
+        }
 
-      // Iterador
-      for (const dish of array) {
-        yield dish;
+        // Iterador
+        for (const dish of array) {
+          yield dish;
+        }
       }
     }
 
     // Generador que recibe una categoría por parámetro y una función de ordenación por parámetro
     // Devolverá un iterador con los platos de esa categoría
-    *getDishesWithAllergen(allergen, order = this.#sortDishesFunc) {
+    *getDishesWithAllergen(allergen, order = null) {
       if (!(allergen instanceof Allergen)) {
         throw new ObjecManagerException("allergen", "Allergen");
       }
@@ -817,9 +824,10 @@ const RestaurantsManager = (function () {
       // Asignamos a una variable los alérgenos con los platos para no alterar la referencia original del array de alérgenos
       const array = [].concat(this.#allergens[posAllergen].dishes);
 
-      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, ordena los platos por defecto
-      array.sort(order);
-
+      // Lo ordenamos, si hemos recibido una función, la utilizará, si no, dejará el array tal cual está
+      if (order) {
+        array.sort(order);
+      }
       // Iterador
       for (const dish of array) {
         yield dish;
@@ -866,8 +874,6 @@ const RestaurantsManager = (function () {
 
       if (!dish) {
         dish = new this.#objectsConstructors[type](name);
-        // Añade el plato a la colección para que quede registrado
-        this.addDish(dish);
       } else {
         dish = dish.dish;
       }
@@ -881,8 +887,6 @@ const RestaurantsManager = (function () {
 
       if (!menu) {
         menu = new this.#objectsConstructors[type](name);
-        // Añade el menú a la colección para que quede registrado
-        this.addMenu(menu);
       } else {
         menu = menu.menu;
       }
@@ -898,8 +902,6 @@ const RestaurantsManager = (function () {
 
       if (!allergen) {
         allergen = new this.#objectsConstructors[type](name);
-        // Añade el alérgeno a la colección para que quede registrado
-        this.addAllergen(allergen);
       } else {
         allergen = allergen.allergen;
       }
@@ -915,8 +917,6 @@ const RestaurantsManager = (function () {
 
       if (!category) {
         category = new this.#objectsConstructors[type](name);
-        // Añade la categoría a la colección para que quede registrado
-        this.addCategory(category);
       } else {
         category = category.category;
       }
@@ -932,8 +932,6 @@ const RestaurantsManager = (function () {
 
       if (!restaurant) {
         restaurant = new this.#objectsConstructors[type](name);
-        // Añade el restaurante a la colección para que quede registrado
-        this.addRestaurant(restaurant);
       } else {
         restaurant = restaurant.restaurant;
       }
