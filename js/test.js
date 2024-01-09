@@ -281,11 +281,11 @@ function testManager() {
     console.log(rm);
 
     // Obtenemos los platos en una categoría, que recibe una función de ordenación como parámetro opcional
-    function ordenarStrings(str1, str2) {
+    function sortDishesName(str1, str2) {
       return str1.dish.name.localeCompare(str2.dish.name);
     }
 
-    let dishesCat1 = rm.getDishesInCategory(cat4, ordenarStrings);
+    let dishesCat1 = rm.getDishesInCategory(cat4, sortDishesName);
     console.log("--- Platos en categoría 1: ---");
     console.log(dishesCat1.next());
     console.log(dishesCat1.next());
@@ -297,6 +297,16 @@ function testManager() {
     console.log("--- Platos con alérgeno de Lactosa: ---");
     console.log(dishesAllergen1.next());
     console.log(dishesAllergen1.next());
+
+    // Función que devuelve true or false dependiendo de si el plato comienza con A
+    function searchDishesStartingWithP(value) {
+      return value.dish.name.startsWith("A");
+    }
+
+    let dishes = rm.findDishes(sortDishesName, searchDishesStartingWithP);
+    console.log("--- Platos con filtro: empiezan por A ---");
+    console.log(dishes.next()); // Arroz con caldo
+    console.log(dishes.next()); // No existen más platos que comiencen por la A
 
     // Patatas fritas se encuentra en tres categorías, un alérgeno y un menú.
     // Lo borramos y queda desasignado de todo.
