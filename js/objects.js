@@ -1,3 +1,5 @@
+import { EmptyValueException, InvalidValueException } from "./exceptions.js";
+
 // Objeto que identifica los datos de un plato
 class Dish {
   #name;
