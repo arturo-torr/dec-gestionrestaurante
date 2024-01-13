@@ -1,8 +1,4 @@
-import {
-  BaseException,
-  EmptyValueException,
-  InvalidValueException,
-} from "./exceptions.js";
+import { BaseException } from "./exceptions.js";
 
 import {
   Dish,
@@ -191,11 +187,11 @@ const RestaurantsManager = (function () {
     constructor(name = "Manager de Restaurantes") {
       this.#name = name;
 
-      // Getter de categories
+      // Getter de dishes
       Object.defineProperty(this, "dishes", {
         enumerable: true,
         get() {
-          const array = this.#dishes.values();
+          const array = this.#dishes;
           return {
             *[Symbol.iterator]() {
               for (const dish of array) {
@@ -205,11 +201,12 @@ const RestaurantsManager = (function () {
           };
         },
       });
+
       // Getter de categories
       Object.defineProperty(this, "categories", {
         enumerable: true,
         get() {
-          const array = this.#categories.values();
+          const array = this.#categories;
           return {
             *[Symbol.iterator]() {
               for (const category of array) {
@@ -224,7 +221,7 @@ const RestaurantsManager = (function () {
       Object.defineProperty(this, "menus", {
         enumerable: true,
         get() {
-          const array = this.#menus.values();
+          const array = this.#menus;
           return {
             *[Symbol.iterator]() {
               for (const menu of array) {
@@ -239,7 +236,7 @@ const RestaurantsManager = (function () {
       Object.defineProperty(this, "allergens", {
         enumerable: true,
         get() {
-          const array = this.#allergens.values();
+          const array = this.#allergens;
           return {
             *[Symbol.iterator]() {
               for (const allergen of array) {
@@ -254,7 +251,7 @@ const RestaurantsManager = (function () {
       Object.defineProperty(this, "restaurants", {
         enumerable: true,
         get() {
-          const array = this.#restaurants.values();
+          const array = this.#restaurants;
           return {
             *[Symbol.iterator]() {
               for (const restaurant of array) {

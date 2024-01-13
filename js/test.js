@@ -183,21 +183,51 @@ function testManager() {
     console.log("Platos añadidos");
     console.log(rm);
 
+    // Comprobación de getter iterador para platos
+    console.log("--- Testeo getter iterador platos ---");
+    for (const dish of rm.dishes) {
+      console.log(dish.dish);
+    }
+
     rm.addCategory(cat1, cat2, cat3, cat4, cat5);
     console.log("Categorías añadidas");
     console.log(rm);
+
+    // Comprobación de getter iterador para categorías
+    console.log("--- Testeo getter iterador categorías ---");
+    for (const category of rm.categories) {
+      console.log(category.category);
+    }
 
     rm.addAllergen(all1, all2, all3).addAllergen(all4, all5);
     console.log("Alérgenos añadidos");
     console.log(rm);
 
+    // Comprobación de getter iterador para alérgenos
+    console.log("--- Testeo getter iterador alérgenos ---");
+    for (const allergen of rm.allergens) {
+      console.log(allergen.allergen);
+    }
+
     rm.addMenu(menu1, menu2, menu3, menu4, menu5);
     console.log("Menús añadidos");
     console.log(rm);
 
+    // Comprobación de getter iterador para menús
+    console.log("--- Testeo getter iterador menús ---");
+    for (const menu of rm.menus) {
+      console.log(menu.menu);
+    }
+
     rm.addRestaurant(res1);
     console.log("Restaurante añadido");
     console.log(rm);
+
+    // Comprobación de getter iterador para restaurantes
+    console.log("--- Testeo getter iterador restaurantes ---");
+    for (const rest of rm.restaurants) {
+      console.log(rest.restaurant);
+    }
 
     // Eliminado de objetos
     rm.removeCategory(cat5);
